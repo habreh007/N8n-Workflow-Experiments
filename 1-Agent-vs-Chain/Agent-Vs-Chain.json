@@ -1,0 +1,253 @@
+{
+  "name": "Agent Vs Chain",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -1664,
+        -128
+      ],
+      "id": "347a2dfc-6a6a-4dc2-9e6b-b60cc700af0a",
+      "name": "When chat message received",
+      "webhookId": "62f9f85c-e8e9-4dd1-be47-360eb4b88714"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.chatInput }}",
+                    "rightValue": "agent",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "a2746a55-1cba-4c33-b07f-87ec0b7b797b"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "f4e84c1e-6858-4b3a-8718-80d32f01eb90",
+                    "leftValue": "={{ $json.chatInput }}",
+                    "rightValue": "chain",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -1440,
+        -128
+      ],
+      "id": "7eab08ed-b4b9-4e8b-9af5-83870e930035",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        -208
+      ],
+      "id": "87382a2d-ef58-48f7-8ba1-d8428dd9a4ee",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "LiDhIdLeD2OJk2fj",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 2
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -992,
+        -208
+      ],
+      "id": "02d99569-cd17-4461-a565-1640b138c518",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -1120,
+        -448
+      ],
+      "id": "a4510cdb-c924-40b9-8a8e-6d1faf60727c",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -1136,
+        64
+      ],
+      "id": "ddb780ab-f953-47d3-a559-a9a39f21a4a1",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -1056,
+        272
+      ],
+      "id": "55348484-ab78-4d73-90c6-e278d2fd6f4f",
+      "name": "Groq Chat Model1",
+      "credentials": {
+        "groqApi": {
+          "id": "LiDhIdLeD2OJk2fj",
+          "name": "Groq account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "When chat message received": [
+      {
+        "json": {
+          "action": "sendMessage",
+          "sessionId": "334fb19c787d4d38a344bb26eaf21dd1",
+          "chatInput": "hi chain"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "f554199e-986b-449e-8501-eb369ac9c601",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c896d5bc9fcff9968d2a25fbd9ced58ddcb90e82bf3d1d5bd12b1486aff8cc63"
+  },
+  "nodeGroups": [],
+  "id": "PmMPpU8rjPColqUI",
+  "tags": []
+}

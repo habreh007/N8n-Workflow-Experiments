@@ -1,0 +1,127 @@
+{
+  "name": "Child Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -752,
+        -96
+      ],
+      "id": "78d4ab17-9444-4e8a-94d6-2e7dbc7eee8a",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Use this weather detail and create a simple readable paragraph on this information\n\nCityName : {{ $json.name }}\nTemperature: {{ $json.main.temp }}\nMin Temperature : {{ $json.main.temp_min }}\nMax Temperature : {{ $json.main.temp_max }}\nPressure : {{ $json.main.pressure }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -272,
+        -96
+      ],
+      "id": "5ea11072-58fa-49b6-a093-f148cff362ea",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        112
+      ],
+      "id": "e0575b1b-b8dc-4876-9dd6-51f5a03d8ad4",
+      "name": "Groq Chat Model"
+        },
+    {
+      "parameters": {
+        "url": "https://api.openweathermap.org/data/2.5/weather",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{ $json.query }}"
+            },
+            {
+              "name": "appid",
+              "value": "YOUR_OPENWEATHERMAP_API_KEY"
+            },
+            {
+              "name": "units",
+              "value": "metric"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        -528,
+        -96
+      ],
+      "id": "9c68abef-9579-4ec8-98f3-8a6886c64dbb",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "db1dbd51-f066-4233-ac7c-eec5a124a79b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c896d5bc9fcff9968d2a25fbd9ced58ddcb90e82bf3d1d5bd12b1486aff8cc63"
+  },
+  "nodeGroups": [],
+  "id": "QGKYUBX4KtMMjyZK",
+  "tags": []
+}

@@ -1,0 +1,80 @@
+# ================================
+
+# Environment & Secrets
+
+# ================================
+
+.env
+.env.*
+!.env.example
+
+# API keys / credentials
+
+*.secret
+secrets/
+credentials/
+
+# ================================
+
+# OS Files
+
+# ================================
+
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ================================
+
+# Editor / IDE
+
+# ================================
+
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+.idea/
+*.swp
+*.swo
+
+# ================================
+
+# Node.js / npm
+
+# ================================
+
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ================================
+
+# Logs
+
+# ================================
+
+*.log
+logs/
+
+# ================================
+
+# Temporary Files
+
+# ================================
+
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# ================================
+
+# n8n Local Data
+
+# ================================
+
+.n8n/
+.n8n-data/
